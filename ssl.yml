@@ -2,6 +2,13 @@
 - hosts: all
   become: yes
   tasks:
+
+    - name: install updates
+      tags: always
+      apt:
+        upgrade: dist
+        update_cache: yes
+
     - name: install openssl
       apt:
         name: openssl
@@ -19,9 +26,9 @@
         privatekey_path: /etc/ssl/private/ca.key
         common_name: "CA WITH SSL"
         country_name: "PH"
-        state_or_province_name: "Manila"
-        locality_name: "Anonas"
-        organization_name: "IT Organization"
+        state_or_province_name: "Metro Manila"
+        locality_name: "Anonas - Quezon City"
+        organization_name: "Computer Engineering Organization"
         email_address: "qikbdelacruz@tip.edu.ph"
       register: ca_csr
 
@@ -33,7 +40,11 @@
         provider: selfsigned
         force: true
 
-    - name: copy the cert to the remote users
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: copy the cert to the  Repository
       copy:
         src: /etc/ssl/certs/ca-certificates.crt
-        dest: /etc/pki/ca-trust/source/anchors/
+        dest: /home/ivan/CPE243_HOA9.1/certificate
+
